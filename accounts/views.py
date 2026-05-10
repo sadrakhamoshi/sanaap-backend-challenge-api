@@ -1,9 +1,8 @@
 from rest_framework import generics
-from django.contrib.auth import get_user_model
-from .serializers import UserCreateSerializer, UserRoleUpdateSerializer
-from .permissions import IsAdminRole
+from accounts.models import User
+from accounts.serializers import UserCreateSerializer
+from accounts.permissions import IsAdminRole
 
-User = get_user_model()
 
 class UserRegisterView(generics.CreateAPIView):
     """Admin-only endpoint to create new users."""
