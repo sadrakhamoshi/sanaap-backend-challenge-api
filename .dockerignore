@@ -1,0 +1,86 @@
+# ============================================
+# Python / uv / Django
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environment (never needed; we build a fresh one)
+.venv/
+venv/
+
+# uv cache (though not typically in the project root)
+.uv_cache/
+
+# Django media & static collected files
+media/
+staticfiles/
+
+# Local SQLite database (if any)
+db.sqlite3
+
+# ============================================
+# Version control
+# ============================================
+.git/
+.gitignore
+.gitattributes
+
+# ============================================
+# Secrets & environment
+# ============================================
+.env
+.env.*
+!.env.example          # keep the example for documentation inside the image if you want
+
+# ============================================
+# IDE & editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# ============================================
+# Operating system junk
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Docker / Compose
+# ============================================
+docker-compose.override.yml
+Dockerfile*
+.dockerignore
+
+# ============================================
+# Testing & coverage
+# ============================================
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.coverage.*
+
+# ============================================
+# Optional local data volumes
+# ============================================
+minio_data/
+postgres_data/
+redis_data/
+
+# ============================================
+# Documentation & miscellaneous
+# ============================================
+README.md
+LICENSE

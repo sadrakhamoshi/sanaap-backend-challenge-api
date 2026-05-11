@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_dev
+    network_mode: "host"
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2
+    container_name: redis_dev
+    network_mode: "host"
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio_dev
+    network_mode: "host"
+    env_file: .env
+    volumes:
+      - minio_data:/data
+    # FIX: Everything goes into one strict array to prevent word-splitting
+    entrypoint: ["/bin/sh", "-c", "mkdir -p /data/documents && minio server /data --console-address ':9001'"]
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  minio_data:
