@@ -27,6 +27,19 @@ services:
     entrypoint: ["/bin/sh", "-c", "mkdir -p /data/documents && minio server /data --console-address ':9001'"]
     restart: unless-stopped
 
+  
+  nginx:
+    build: ./nginx
+    container_name: nginx_proxy
+    network_mode: "host"
+    # depends_on:
+    #   - web
+    volumes:
+      # We mount that EXACT SAME named volume into Nginx as read-only
+      - ./staticfiles:/app/staticfiles:ro 
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   minio_data:
+  static_files:
