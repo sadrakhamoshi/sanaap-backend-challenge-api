@@ -2,7 +2,9 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django.utils.decorators import method_decorator
 
+from documents.decorators import custom_cache_decorator
 from documents.models import Document
 from documents.serializers import DocumentSerializer
 from documents.permissions import DocumentRolePermission
@@ -21,3 +23,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     filterset_class = DocumentFilter
     
     search_fields = ['original_name', 'content_type']
+
+    @method_decorator(custom_cache_decorator(timeout=60 * 15))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)

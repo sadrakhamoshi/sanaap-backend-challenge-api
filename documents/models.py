@@ -18,6 +18,7 @@ class Document(models.Model):
             self.original_name = self.content.name.split('/')[-1]
             self.content_type = getattr(self.content.file, 'content_type', 'application/octet-stream')
         super().save(*args, **kwargs)
+
         if self.content and not self.size:
             self.size = self.content.size
             super().save(update_fields=['size'])
