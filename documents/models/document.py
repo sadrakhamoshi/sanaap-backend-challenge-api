@@ -14,11 +14,26 @@ def _upload_to(instance, filename):
     return f"documents/{now:%Y/%m/%d}/{unique_filename}"
 
 
+class UploadStatus(models.TextChoices):
+    PENDING = 'PENDING', 'Pending in Staging'
+    PROCESSING = 'PROCESSING', 'Uploading to MinIO'
+    COMPLETED = 'COMPLETED', 'Available in MinIO'
+    FAILED = 'FAILED', 'Upload Failed'
+
+
 class Document(models.Model):
-    content = models.FileField(upload_to=_upload_to)
+    content = models.FileField(upload_to=_upload_to, blank=True, null=True)
     original_name = models.CharField(max_length=255, blank=True)
     size = models.PositiveIntegerField(editable=False, default=0)
     content_type = models.CharField(max_length=100, blank=True)
+
+    staging_path = models.CharField(max_length=512, blank=True)
+    
+    upload_status = models.CharField(
+        max_length=31, 
+        choices=UploadStatus.choices, 
+        default=UploadStatus.PENDING
+    )
 
     def save(self, user=None, *args, **kwargs):
         is_new = self.pk is None
