@@ -1,5 +1,4 @@
 from django.db import models, transaction
-from storages.backends.s3boto3 import S3Boto3Storage
 
 from documents.models.audit_log import AuditAction, AuditLog
 
@@ -12,7 +11,7 @@ def _upload_to(instance, filename):
 
 
 class Document(models.Model):
-    content = models.FileField(upload_to=_upload_to, storage=S3Boto3Storage())
+    content = models.FileField(upload_to=_upload_to)
     original_name = models.CharField(max_length=255, blank=True)
     size = models.PositiveIntegerField(editable=False, default=0)
     content_type = models.CharField(max_length=100, blank=True)

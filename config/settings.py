@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config, Csv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from datetime import timedelta
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -149,6 +149,21 @@ CACHES = {
             "IGNORE_EXCEPTIONS": True,
         }
     }
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1) if DEBUG else timedelta(minutes=10),  # Set to minutes=60, days=1, etc.
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        # Since we set up Nginx to handle statics, we keep this local!
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
