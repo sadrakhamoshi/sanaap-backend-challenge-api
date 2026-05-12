@@ -1,13 +1,17 @@
 from django.db import models, transaction
 
 from documents.models.audit_log import AuditAction, AuditLog
-
+import os
+import uuid
+import datetime
 
 def _upload_to(instance, filename):
-    import datetime
 
+    ext = os.path.splitext(filename)[1]
+    unique_filename = f"{uuid.uuid4().hex}{ext}"
     now = datetime.datetime.now()
-    return f"documents/{now:%Y/%m/%d}/{filename}"
+    
+    return f"documents/{now:%Y/%m/%d}/{unique_filename}"
 
 
 class Document(models.Model):
@@ -19,7 +23,7 @@ class Document(models.Model):
     def save(self, user=None, *args, **kwargs):
         is_new = self.pk is None
         action = AuditAction.CREATED if is_new else AuditAction.UPDATED
-
+        
         if self.content:
             if not self.original_name:
                 self.original_name = self.content.name.split("/")[-1]
