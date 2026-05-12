@@ -23,19 +23,35 @@ services:
     env_file: .env
     volumes:
       - minio_data:/data
-    # FIX: Everything goes into one strict array to prevent word-splitting
     entrypoint: ["/bin/sh", "-c", "mkdir -p /data/documents && minio server /data --console-address ':9001'"]
     restart: unless-stopped
 
+  web:
+    build: .
+    container_name: django_web
+    network_mode: "host"
+    env_file: .env
+    volumes:
+      - ./staticfiles:/app/staticfiles
+      - staging_data:/app/staging    
+    command: ["uv", "run", "gunicorn", "config.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120"]
+    restart: unless-stopped
+
+  celery:
+    build: .
+    container_name: django_celery
+    network_mode: "host"
+    env_file: .env
+    volumes:
+      - staging_data:/app/staging
+    command: ["uv", "run", "celery", "-A", "config", "worker", "--loglevel=info"]
+    restart: unless-stopped
   
   nginx:
     build: ./nginx
     container_name: nginx_proxy
     network_mode: "host"
-    # depends_on:
-    #   - web
     volumes:
-      # We mount that EXACT SAME named volume into Nginx as read-only
       - ./staticfiles:/app/staticfiles:ro 
     restart: unless-stopped
 
@@ -43,3 +59,4 @@ volumes:
   postgres_data:
   minio_data:
   static_files:
+  staging_data:   # Declare the new volume here

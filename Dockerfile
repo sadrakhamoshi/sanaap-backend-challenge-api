@@ -23,7 +23,7 @@ RUN rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list && \
     echo "deb http://repo.iut.ac.ir/debian/ bookworm main" > /etc/apt/sources.list && \
     echo "deb http://repo.iut.ac.ir/debian/ bookworm-updates main" >> /etc/apt/sources.list
 
-    RUN apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends gdal-bin \
     libgdal-dev \
     python3-gdal \
