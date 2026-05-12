@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DMS WebSocket Test</title>
+</head>
+<body style="font-family: sans-serif; padding: 20px;">
+    <h2>Admin Real-Time Dashboard</h2>
+    <p>Status: <span id="status" style="color: orange; font-weight: bold;">Connecting...</span></p>
+    
+    <h3>Notifications:</h3>
+    <ul id="notifications" style="background: #f4f4f4; padding: 20px; border-radius: 8px;">
+        </ul>
+
+    <script>
+        // PASTE YOUR REAL TOKEN HERE
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc4NjY1OTEwLCJpYXQiOjE3Nzg1Nzk1MTAsImp0aSI6Ijk2NTBkOTAwM2JlYzQwZDk5YzU4Y2EyODc1ODczZDNjIiwidXNlcl9pZCI6IjEifQ.A45h3JvdrPk9X2cqjNHY2P89mgO1ZeqJ8y-FHKgkzhQ"; 
+        
+        const ws = new WebSocket(`ws://127.0.0.1/ws/notifications/?token=${token}`);
+        const statusEl = document.getElementById("status");
+        const listEl = document.getElementById("notifications");
+
+        ws.onopen = function() {
+            statusEl.innerText = "✅ Connected to Redis/Django!";
+            statusEl.style.color = "green";
+            console.log("WebSocket Connected!");
+        };
+
+        ws.onmessage = function(event) {
+            const payload = JSON.parse(event.data);
+            console.log("🚨 NOTIFICATION RECEIVED:", payload);
+            
+            // Add the new notification to the screen
+            const doc = payload.data;
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${doc.uploaded_by}</strong> uploaded <em>${doc.document_name}</em>`;
+            listEl.prepend(li);
+        };
+
+        ws.onclose = function() {
+            statusEl.innerText = "❌ Disconnected.";
+            statusEl.style.color = "red";
+        };
+    </script>
+</body>
+</html>
