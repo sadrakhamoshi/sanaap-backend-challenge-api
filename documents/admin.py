@@ -23,3 +23,17 @@ class DocumentAdmin(admin.ModelAdmin):
             return f"{obj.size / (1024 * 1024 * 1024):.1f} GB"
 
     size_display.short_description = "Size"
+
+from .models import AuditLog  # Assuming the model is named AuditLog
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in AuditLog._meta.fields]
+    readonly_fields = [field.name for field in AuditLog._meta.fields]
+    ordering = ['-timestamp']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
