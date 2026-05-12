@@ -218,6 +218,7 @@ AWS_QUERYSTRING_AUTH = True      # Forces URLs to be pre-signed
 AWS_QUERYSTRING_EXPIRE = 120      # URLs self-destruct after 120 seconds
 AWS_DEFAULT_ACL = 'private'
 
-
+CELERY_BROKER_URL = config('REDIS_URL', default='redis://redis:6379/0')
+CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://redis:6379/0')
 
 AUTH_USER_MODEL = 'accounts.User'
