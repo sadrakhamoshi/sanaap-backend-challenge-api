@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "boto3>=1.43.6",
+    "channels>=4.3.2",
+    "channels-redis>=4.3.0",
+    "daphne>=4.2.1",
     "django>=5.0,<5.2",
     "django-filter>=25.1",
     "django-redis>=6.0.0",
@@ -18,4 +21,5 @@ dependencies = [
     "psycopg2-binary>=2.9.12",
     "python-decouple>=3.8",
     "redis>=7.4.0",
+    "uvicorn[standard]>=0.46.0",
 ]
