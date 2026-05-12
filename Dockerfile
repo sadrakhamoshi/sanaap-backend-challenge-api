@@ -22,10 +22,8 @@ FROM docker.abrha.net/python:3.13-slim
 RUN rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list && \
     echo "deb http://repo.iut.ac.ir/debian/ bookworm main" > /etc/apt/sources.list && \
     echo "deb http://repo.iut.ac.ir/debian/ bookworm-updates main" >> /etc/apt/sources.list
-    # echo "deb http://repo.iut.ac.ir/repo/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
-    # echo "deb http://repo.abrha.net/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list
 
-RUN apt-get update && \
+    RUN apt-get update && \
     apt-get install -y --no-install-recommends gdal-bin \
     libgdal-dev \
     python3-gdal \
