@@ -28,6 +28,7 @@ services:
 
   web:
     build: .
+    image: web_base:latest
     container_name: django_web
     network_mode: "host"
     env_file: .env
@@ -42,7 +43,7 @@ services:
     restart: unless-stopped
 
   celery:
-    build: .
+    image: web_base:latest
     container_name: django_celery
     network_mode: "host"
     env_file: .env
@@ -50,9 +51,10 @@ services:
       - minio
       - redis
       - postgres
+      - web
     volumes:
       - staging_data:/app/staging
-    command: ["celery", "-A", "config", "worker", "--loglevel=info"]
+    entrypoint: ["celery", "-A", "config", "worker", "--loglevel=info"]
     restart: unless-stopped
   
   nginx:
