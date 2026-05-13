@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM docker.abrha.net/nginx:stable-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:15
+    image: docker.abrha.net/postgres:15
     container_name: postgres_dev
     network_mode: "host"
     env_file: .env
@@ -11,13 +11,13 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:7.2
+    image: docker.abrha.net/redis:7.2
     container_name: redis_dev
     network_mode: "host"
     restart: unless-stopped
 
   minio:
-    image: minio/minio:latest
+    image: docker.abrha.net/minio/minio:latest
     container_name: minio_dev
     network_mode: "host"
     env_file: .env
@@ -31,10 +31,14 @@ services:
     container_name: django_web
     network_mode: "host"
     env_file: .env
+    depends_on:
+      - minio
+      - redis
+      - postgres
     volumes:
       - ./staticfiles:/app/staticfiles
       - staging_data:/app/staging    
-    command: ["uv", "run", "gunicorn", "config.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120"]
+    command: ["gunicorn", "config.asgi:application", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120"]
     restart: unless-stopped
 
   celery:
@@ -42,15 +46,21 @@ services:
     container_name: django_celery
     network_mode: "host"
     env_file: .env
+    depends_on:
+      - minio
+      - redis
+      - postgres
     volumes:
       - staging_data:/app/staging
-    command: ["uv", "run", "celery", "-A", "config", "worker", "--loglevel=info"]
+    command: ["celery", "-A", "config", "worker", "--loglevel=info"]
     restart: unless-stopped
   
   nginx:
     build: ./nginx
     container_name: nginx_proxy
     network_mode: "host"
+    depends_on:
+      - web
     volumes:
       - ./staticfiles:/app/staticfiles:ro 
     restart: unless-stopped
@@ -60,3 +70,7 @@ volumes:
   minio_data:
   static_files:
   staging_data:   # Declare the new volume here
+
+networks:
+  sanaap_net:
+    driver: bridge
